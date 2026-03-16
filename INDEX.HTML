@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Factory MMS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
+:root{--bg:#0d1117;--sur:#161b22;--sur2:#1f2937;--bor:#2d333b;--acc:#f0a500;--grn:#3fb950;--yel:#d29922;--red:#f85149;--blu:#58a6ff;--txt:#e6edf3;--mut:#7d8590;--h:'Rajdhani',sans-serif;--b:'DM Sans',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--b);background:var(--bg);color:var(--txt);min-height:100vh;font-size:15px}
+
+/* LOGIN */
+#L{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;position:relative}
+#L::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(240,165,0,.07),transparent 70%);top:-200px;right:-150px;pointer-events:none}
+.lc{background:var(--sur);border:1px solid var(--bor);border-radius:20px;padding:44px 36px;width:100%;max-width:380px;position:relative;z-index:1;animation:fu .4s ease}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.li{width:52px;height:52px;background:var(--acc);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:22px}
+.lc h1{font-family:var(--h);font-size:28px;font-weight:700;margin-bottom:5px}.lc h1 span{color:var(--acc)}
+.ls{color:var(--mut);font-size:13px;margin-bottom:30px;line-height:1.5}
+.il{display:block;font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-family:var(--h)}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--bor);border-radius:10px;padding:12px 14px;color:var(--txt);font-family:var(--b);font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(240,165,0,.08)}
+select option{background:var(--sur2)}
+textarea{resize:vertical;min-height:75px;line-height:1.5}
+.mb{margin-bottom:16px}
+.bmain{width:100%;background:var(--acc);color:#000;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--h);letter-spacing:.5px;transition:opacity .2s,transform .1s;margin-top:6px}
+.bmain:hover{opacity:.88}.bmain:active{transform:scale(.98)}.bmain:disabled{opacity:.5;cursor:not-allowed}
+.err{color:var(--red);font-size:13px;text-align:center;margin-top:12px;display:none;font-family:var(--h)}
+
+/* APP */
+#A{display:none;min-height:100vh}
+.tb{background:var(--sur);border-bottom:1px solid var(--bor);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100}
+.tbl{display:flex;align-items:center;gap:10px}
+.tlo{width:32px;height:32px;background:var(--acc);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.tlt{font-family:var(--h);font-size:16px;font-weight:700}
+.tbr{display:flex;align-items:center;gap:8px}
+.uc{display:flex;align-items:center;gap:6px;background:var(--sur2);border:1px solid var(--bor);border-radius:20px;padding:5px 12px;font-size:12px}
+.od{width:7px;height:7px;border-radius:50%;background:var(--grn)}
+.bo{background:none;border:1px solid var(--bor);color:var(--mut);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--b);transition:all .2s}
+.bo:hover{border-color:var(--red);color:var(--red)}
+.tabs{background:var(--sur);border-bottom:1px solid var(--bor);display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:13px 20px;font-size:14px;font-weight:600;color:var(--mut);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-family:var(--h);letter-spacing:.3px}
+.tab.active{color:var(--acc);border-bottom-color:var(--acc)}
+.pg{padding:20px 16px;max-width:600px;margin:0 auto}
+
+/* CARD */
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:14px;padding:24px 20px;margin-bottom:16px}
+.ch{font-family:var(--h);font-size:18px;font-weight:700;letter-spacing:.3px;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.fl{margin-bottom:16px}
+.fl label{display:block;font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-family:var(--h)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}}
+.bsub{width:100%;background:var(--acc);color:#000;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--h);letter-spacing:.5px;transition:opacity .2s,transform .1s;margin-top:4px}
+.bsub:hover{opacity:.88}.bsub:active{transform:scale(.98)}.bsub:disabled{opacity:.5;cursor:not-allowed}
+
+/* HISTORY */
+.hf{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:400px){.hf{grid-template-columns:1fr}}
+.hw{overflow-x:auto;border-radius:10px;border:1px solid var(--bor)}
+.ht{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
+.ht th{background:var(--sur2);padding:10px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);font-family:var(--h);border-bottom:1px solid var(--bor);white-space:nowrap}
+.ht td{padding:11px 14px;border-bottom:1px solid var(--bor);vertical-align:top;line-height:1.4}
+.ht tr:last-child td{border-bottom:none}
+.ht tr:hover td{background:var(--sur2)}
+
+/* BADGES */
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--h);letter-spacing:.5px;white-space:nowrap}
+.bP{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.bI{background:rgba(210,153,34,.12);color:var(--yel);border:1px solid rgba(210,153,34,.3)}
+.bF{background:rgba(63,185,80,.12);color:var(--grn);border:1px solid rgba(63,185,80,.3)}
+
+/* STATS */
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stn{background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:14px 10px;text-align:center}
+.sn{font-family:var(--h);font-size:28px;font-weight:700;line-height:1}
+.sl{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;font-family:var(--h)}
+
+/* EMPTY / LOADING / TOAST */
+.empty{text-align:center;padding:50px 20px;color:var(--mut)}
+.ei{font-size:38px;margin-bottom:10px}
+.empty p{font-size:13px;line-height:1.6}
+.ld{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px 20px;color:var(--mut);font-size:14px}
+.sp{width:20px;height:20px;border:2px solid var(--bor);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:11px 22px;border-radius:10px;font-weight:700;font-size:14px;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-family:var(--h);letter-spacing:.3px;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="L">
+  <div class="lc">
+    <div class="li">⚙️</div>
+    <h1>Factory <span>MMS</span></h1>
+    <p class="ls">Maintenance Management System<br>Enter your Employee ID to continue</p>
+    <label class="il">Employee ID</label>
+    <input class="mb" type="text" id="eid" placeholder="Employee ID" autocomplete="off" inputmode="numeric">
+    <button class="bmain" id="lbtn" onclick="login()">Sign In →</button>
+    <div class="err" id="err">❌ Employee ID not found. Contact admin.</div>
+  </div>
+</div>
+
+<div id="A">
+  <div class="tb">
+    <div class="tbl">
+      <div class="tlo">⚙️</div>
+      <div class="tlt">Factory MMS</div>
+    </div>
+    <div class="tbr">
+      <div class="uc"><div class="od"></div><span id="tbu">—</span></div>
+      <button class="bo" onclick="logout()">Exit</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" id="tab-log" onclick="goTab('log')">🔧 Log Work</div>
+    <div class="tab" id="tab-history" onclick="goTab('history')">🔍 History</div>
+  </div>
+  <div class="pg" id="pg"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 🔧 UPDATE HERE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const URL = 'https://script.google.com/macros/s/AKfycbw8xro63717qb58KF1DwScUpMaEaOqKrqHDsfkXYRF_VUGubKCXHIG-n-JsGimP5dDi/exec';
+
+const M = {
+  "Line 1":  ["WMN Make RCL","Facing","Head Dia","OCG - 1","Coly Turn - 1","Coly Turn - 2","Tip Hardening","ICL","FCL","Seat Grinding","End Touch"]
+};
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let user = null;
+
+// ── UTILS ──
+const get = id => document.getElementById(id);
+const pg  = () => get('pg');
+
+function fmt12(t) {
+  if (!t) return '—';
+  const [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12  = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function calcTaken(tin, tout) {
+  if (!tin || !tout) return '—';
+  const [h1,m1] = tin.split(':').map(Number);
+  const [h2,m2] = tout.split(':').map(Number);
+  let mins = (h2*60+m2)-(h1*60+m1);
+  if (mins < 0) mins += 1440;
+  const h = Math.floor(mins/60), m = mins%60;
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function today() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+}
+
+function toast(msg, col='#3fb950') {
+  const t = get('toast');
+  t.textContent = msg;
+  t.style.background = col;
+  t.style.color = col === '#f0a500' ? '#000' : '#fff';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function GET(p)   { return (await fetch(URL + '?' + new URLSearchParams(p))).json(); }
+async function POST(p)  { return (await fetch(URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(p) })).json(); }
+
+// ── AUTH ──
+async function login() {
+  const id = get('eid').value.trim();
+  if (!id) { showErr('Enter your Employee ID'); return; }
+  const btn = get('lbtn');
+  btn.textContent = 'Checking...'; btn.disabled = true;
+  get('err').style.display = 'none';
+  try {
+    const r = await GET({ action:'login', empId:id });
+    if (r.success) {
+      user = { empId:r.empId, name:r.name };
+      get('L').style.display = 'none';
+      get('A').style.display = 'block';
+      get('tbu').textContent = `${r.empId} · ${r.name}`;
+      goTab('log');
+    } else showErr('❌ Employee ID not found. Contact admin.');
+  } catch(e) { showErr('❌ Connection error. Check internet.'); }
+  btn.textContent = 'Sign In →'; btn.disabled = false;
+}
+
+function showErr(m) { const e=get('err'); e.textContent=m; e.style.display='block'; }
+
+function logout() {
+  user = null;
+  get('L').style.display = 'flex';
+  get('A').style.display = 'none';
+  get('eid').value = '';
+  get('err').style.display = 'none';
+}
+
+get('eid').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+// ── TABS ──
+function goTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  get('tab-'+id).classList.add('active');
+  id === 'log' ? pg().innerHTML = logForm() : pg().innerHTML = histPage();
+}
+
+// ── LOG WORK FORM ──
+function logForm() {
+  const lines = Object.keys(M).map(l => `<option>${l}</option>`).join('');
+  return `
+  <div class="card">
+    <div class="ch">🔧 Log Machine Work</div>
+    <div class="fl">
+      <label>Production Line</label>
+      <select id="fl" onchange="updM()"><option value="">— Select Line —</option>${lines}</select>
+    </div>
+    <div class="fl">
+      <label>Machine</label>
+      <select id="fm"><option value="">— Select Line First —</option></select>
+    </div>
+    <div class="fl">
+      <label>Problem</label>
+      <textarea id="fp" placeholder="Describe the problem..."></textarea>
+    </div>
+    <div class="fl">
+      <label>Correction Done</label>
+      <textarea id="fc" placeholder="What was done to fix it..."></textarea>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Time In</label><input type="time" id="fti"></div>
+      <div class="fl"><label>Time Out</label><input type="time" id="fto"></div>
+    </div>
+    <div class="fl">
+      <label>Status</label>
+      <select id="fs">
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Fixed</option>
+      </select>
+    </div>
+    <button class="bsub" id="sbtn" onclick="submitWork()">Submit →</button>
+  </div>`;
+}
+
+function updM() {
+  const line = get('fl').value;
+  get('fm').innerHTML = line
+    ? '<option value="">— Select Machine —</option>' + (M[line]||[]).map(m=>`<option>${m}</option>`).join('')
+    : '<option value="">— Select Line First —</option>';
+}
+
+async function submitWork() {
+  const line=get('fl').value, machine=get('fm').value,
+        problem=get('fp').value.trim(), correction=get('fc').value.trim(),
+        timeIn=get('fti').value, timeOut=get('fto').value,
+        status=get('fs').value;
+
+  if (!line||!machine) { toast('⚠ Select Line and Machine','#f85149'); return; }
+  if (!problem)        { toast('⚠ Enter the Problem','#f85149'); return; }
+
+  const timeTaken = calcTaken(timeIn, timeOut);
+  const btn = get('sbtn');
+  btn.textContent = 'Submitting...'; btn.disabled = true;
+
+  try {
+    const r = await POST({
+      action:'submitComplaint',
+      date: today(),
+      line, machine, problem,
+      technician: user.name,
+      correction,
+      timeIn:  fmt12(timeIn),
+      timeOut: fmt12(timeOut),
+      timeTaken: timeTaken === '—' ? '' : timeTaken,
+      status
+    });
+
+    if (r.success) {
+      toast('✅ Submitted to Google Sheets!','#f0a500');
+      ['fl','fm','fp','fc','fti','fto'].forEach(id => get(id).value='');
+      get('fm').innerHTML = '<option value="">— Select Line First —</option>';
+      get('fs').value = 'Pending';
+    } else toast('❌ Submit failed. Try again.','#f85149');
+  } catch(e) { toast('❌ Connection error. Try again.','#f85149'); }
+
+  btn.textContent = 'Submit →'; btn.disabled = false;
+}
+
+// ── HISTORY ──
+function histPage() {
+  const lines = Object.keys(M).map(l=>`<option>${l}</option>`).join('');
+  return `
+  <div class="hf">
+    <select id="hl" onchange="updHM()"><option value="">— Select Line —</option>${lines}</select>
+    <select id="hm" onchange="loadHist()"><option value="">— Select Machine —</option></select>
+  </div>
+  <div id="ha">
+    <div class="empty"><div class="ei">🔍</div><p>Select a line and machine<br>to view breakdown history.</p></div>
+  </div>`;
+}
+
+function updHM() {
+  const line = get('hl').value;
+  get('hm').innerHTML = '<option value="">— Select Machine —</option>' +
+    (M[line]||[]).map(m=>`<option>${m}</option>`).join('');
+  get('ha').innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Now select a machine.</p></div>`;
+}
+
+async function loadHist() {
+  const machine = get('hm').value;
+  if (!machine) return;
+  const area = get('ha');
+  area.innerHTML = `<div class="ld"><div class="sp"></div> Loading history...</div>`;
+
+  try {
+    const r = await GET({ action:'getComplaints' });
+    if (!r.success) { area.innerHTML=`<div class="empty"><div class="ei">❌</div><p>Could not load data.</p></div>`; return; }
+
+    const recs = r.data
+      .map(x=>({
+        date:       x['DATE']       ||'',
+        machine:    x['MACHINE']    ||'',
+        problem:    x['PROBLEM']    ||'',
+        technician: x['TECHNICIAN'] ||'',
+        correction: x['CORRECTION'] ||'',
+        timeIn:     x['TIME IN']    ||'',
+        timeOut:    x['TIME OUT']   ||'',
+        timeTaken:  x['TIME TAKEN'] ||'',
+        status:     x['STATUS']     ||''
+      }))
+      .filter(x => x.machine === machine)
+      .reverse();
+
+    if (!recs.length) {
+      area.innerHTML=`<div class="empty"><div class="ei">✅</div><p>No history for <strong>${machine}</strong>.</p></div>`;
+      return;
+    }
+
+    const total=recs.length, fixed=recs.filter(r=>r.status==='Fixed').length, pending=recs.filter(r=>r.status==='Pending').length;
+
+    area.innerHTML = `
+    <div class="st" style="margin-bottom:16px">
+      <div class="stn"><div class="sn">${total}</div><div class="sl">Total</div></div>
+      <div class="stn"><div class="sn" style="color:var(--grn)">${fixed}</div><div class="sl">Fixed</div></div>
+      <div class="stn"><div class="sn" style="color:var(--red)">${pending}</div><div class="sl">Pending</div></div>
+    </div>
+    <div class="hw">
+      <table class="ht">
+        <thead><tr>
+          <th>Date</th><th>Problem</th><th>Technician</th>
+          <th>Correction</th><th>Time In</th><th>Time Out</th>
+          <th>Time Taken</th><th>Status</th>
+        </tr></thead>
+        <tbody>${recs.map(r=>`
+        <tr>
+          <td style="white-space:nowrap">${r.date||'—'}</td>
+          <td>${r.problem||'—'}</td>
+          <td>${r.technician||'—'}</td>
+          <td>${r.correction||'—'}</td>
+          <td style="white-space:nowrap">${r.timeIn||'—'}</td>
+          <td style="white-space:nowrap">${r.timeOut||'—'}</td>
+          <td style="white-space:nowrap">${r.timeTaken||'—'}</td>
+          <td><span class="bdg b${r.status[0]}">${r.status}</span></td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  } catch(e) {
+    area.innerHTML=`<div class="empty"><div class="ei">❌</div><p>Connection error.<br>Try again.</p></div>`;
+  }
+}
+</script>
+</body>
+</html>
